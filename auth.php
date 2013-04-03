@@ -67,20 +67,11 @@ class auth_plugin_persona extends auth_plugin_base {
      * @return bool Authentication success or failure.
      */
     function user_login($username, $password) {
-        global $SESSION;
+        // We don't store passwords locally; only care about username success.
         if (!$username) {
             return false;
         }
-        if (isset($SESSION) && isset($SESSION->auth_persona)) {
-            $verification = current($SESSION->auth_persona);
-            if ($verification->status === AUTH_PERSONA_OKAY) {
-                $usernamestrip = str_replace('persona-user-', '', $username);
-                if (md5($verification->email) == $usernamestrip) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -144,6 +135,24 @@ class auth_plugin_persona extends auth_plugin_base {
     }
 
     /**
+     * Sets up basic userinfo
+     *
+     * @param string $username username
+     * @return mixed array with no magic quotes or false on error
+     */
+    function get_userinfo($username) {
+        global $SESSION;
+        if (!isset($SESSION->auth_persona_login)) {
+            return false;
+        }
+
+        return array(
+            'email' => $SESSION->auth_persona_login->email,
+        );
+        unset($SESSION->auth_persona_login);
+    }
+
+    /**
      * Verify that the given assertion with the persona.org verifier
      * and return the response to the loginpage_hook to create
      * form data for login submission hook.
@@ -173,22 +182,22 @@ class auth_plugin_persona extends auth_plugin_base {
      * verification process.
      */
     function loginpage_hook() {
-        global $frm, $SESSION;
+        global $DB, $frm, $SESSION;
 
         // Verify the assertion and set up the $frm data.
         $assertion = optional_param('personaassertion', null, PARAM_TEXT);
         if ($assertion) {
             $verified = $this->verify_assertion($assertion);
             if ($verified && ($verified->status === AUTH_PERSONA_OKAY)) {
+                if (!$frm = $DB->get_record('user', array('email' => $verified->email))) {
+                    $frm = new stdClass;
+                    $frm->username = $this->username($verified->email);
+                    $frm->password = null;
 
-                // Fake the user submitted form.
-                $frm = new stdClass;
-                $frm->username = $this->username($verified->email);
-                $frm->password = null;
-
-                // Add it to the SESSION for user_login purposes.
-                $SESSION->auth_persona   = array();
-                $SESSION->auth_persona[] = $verified;
+                    if (!isset($SESSION->auth_persona_login)) {
+                        $SESSION->auth_persona_login = $verified;
+                    }
+                }
             }
         }
         return;
@@ -220,9 +229,13 @@ class auth_plugin_persona extends auth_plugin_base {
     function loginpage_idp_list($wantsurl) {
         global $PAGE;
 
-        // Include the Persona
-        $PAGE->requires->js_module(array('name' => 'external-persona', 'fullpath' => new moodle_url('https://login.persona.org/include.js')));
-        $PAGE->requires->yui_module('moodle-auth_persona-persona', 'M.auth_persona.init');
+        // Include the Persona modules for login; only once per page.
+        static $loaded = false;
+        if (!$loaded) {
+            $PAGE->requires->js_module(array('name' => 'external-persona', 'fullpath' => new moodle_url('https://login.persona.org/include.js')));
+            $PAGE->requires->yui_module('moodle-auth_persona-persona', 'M.auth_persona.init');
+            $loaded = true;
+        }
 
         $persona = array(
             'url'  => new moodle_url('#'),
