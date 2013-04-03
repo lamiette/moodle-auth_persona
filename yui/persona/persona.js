@@ -28,7 +28,7 @@ YUI.add('moodle-auth_persona-persona', function (Y) {
                     }
                 },
                 onlogout: function() {
-                    Y.config.win.location = '/login/logout.php?sesskey='+M.cfg.sesskey;
+                    Y.config.win.location = M.cfg.wwwroot+'/login/logout.php?sesskey='+M.cfg.sesskey;
                 },
             });
         },
