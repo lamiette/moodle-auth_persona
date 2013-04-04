@@ -1,0 +1,55 @@
+<?php
+    global $OUTPUT;
+    $yesno = array(get_string('no'), get_string('yes'));
+
+    $signinbtns = array('persona_sign_in_black', 'persona_sign_in_blue', 'persona_sign_in_red');
+    if (!isset($config->signinbtn)) {
+        $config->signinbtn = 'persona_sign_in_black';
+    }
+    if (!isset($config->privacypolicy)) {
+        $config->privacypolicy = '';
+    }
+    if (!isset($config->termsofservice)) {
+        $config->termsofservice = '';
+    }
+?>
+<table cellspacing="0" cellpadding="5" border="0" id="auth-persona-config-table">
+<tr>
+   <td colspan="3">
+        <h2 class="main"><?php print_string('auth_personasettings', 'auth_persona') ?> </h2>
+   </td>
+</tr>
+<tr>
+    <td align="right"><label for="signinbtn"><?php print_string('auth_signinbtn', 'auth_persona') ?>:</label></td>
+    <td>
+    <?php
+        foreach ($signinbtns as $btn) {
+            $icon = new pix_icon($btn, get_string('auth_personasignin', 'auth_persona'), 'auth_persona');
+            $checked = ($btn == $config->signinbtn) ? 'checked' : '';
+            $options = array('type' => 'radio', 'name' => 'signinbtn', 'value' => $btn);
+            if ($btn === $config->signinbtn) {
+                $options['checked'] = 'checked';
+            }
+            echo html_writer::start_tag('input', $options);
+            echo '&nbsp;&nbsp;';
+            echo $OUTPUT->render($icon);
+            echo html_writer::end_tag('input');
+            echo '&nbsp;&nbsp;';
+        }
+    ?>
+    </td>
+</tr>
+<tr>
+    <td align="right"><label for="privacypolicy"><?php print_string('auth_privacypolicy', 'auth_persona'); ?>:</label></td>
+    <td>
+        <textarea name="privacypolicy" cols="60" rows="20" style="overflow:auto;"><?php echo $config->privacypolicy; ?></textarea>
+    </td>
+</tr>
+<tr>
+    <td align="right"><label for="termsofservice"><?php print_string('auth_termsofservice', 'auth_persona'); ?>:</label></td>
+    <td>
+        <textarea name="termsofservice" cols="60" rows="20" style="overflow:auto;"><?php echo $config->termsofservice; ?></textarea>
+    </td>
+</tr>
+</table>
+

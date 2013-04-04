@@ -59,6 +59,38 @@ class auth_plugin_persona extends auth_plugin_base {
     }
 
     /**
+     * Prints a form for configuring this authentication plugin.
+     *
+     * This function is called from admin/auth.php, and outputs a full page with
+     * a form for configuring this plugin.
+     *
+     * @param array $page An object containing all the data for this page.
+     */
+    function config_form($config, $err, $userfields) {
+        include 'config.html';
+    }
+
+    /**
+     * Processes and stores configuration data for this authentication plugin.
+     */
+    function process_config($config) {
+        if (isset($config->privacypolicy) && $config->privacypolicy != '') {
+            $privacy = clean_param($config->privacypolicy, PARAM_CLEANHTML);
+            set_config('privacypolicy', $privacy, 'auth/persona');
+        } else {
+            unset_config('privacypolicy', 'auth/persona');
+        }
+        if (isset($config->termsofservice) && $config->termsofservice != '') {
+            $termsofservice = clean_param($config->termsofservice, PARAM_CLEANHTML);
+            set_config('termsofservice', $termsofservice, 'auth/persona');
+        } else {
+            unset_config('termsofservice', 'auth/persona');
+        }
+        set_config('signinbtn', $config->signinbtn, 'auth/persona');
+        return true;
+    }
+
+    /**
      * Returns true if the username and password work and false if they are
      * wrong or don't exist.
      *
@@ -227,19 +259,27 @@ class auth_plugin_persona extends auth_plugin_base {
      * @return array $persona an array of details for the persona.org authentication link
      */
     function loginpage_idp_list($wantsurl) {
-        global $PAGE;
+        global $PAGE, $SITE;
 
         // Include the Persona modules for login; only once per page.
         static $loaded = false;
         if (!$loaded) {
+            $params = array('sitename' => $SITE->fullname);
+            if (isset($this->config->termsofservice) && !empty($this->config->termsofservice)) {
+                $params['termsofservice'] = true;
+            }
+            if (isset($this->config->privacypolicy) && !empty($this->config->privacypolicy)) {
+                $params['privacypolicy'] = true;
+            }
             $PAGE->requires->js_module(array('name' => 'external-persona', 'fullpath' => new moodle_url('https://login.persona.org/include.js')));
-            $PAGE->requires->yui_module('moodle-auth_persona-persona', 'M.auth_persona.init');
+            $PAGE->requires->yui_module('moodle-auth_persona-persona', 'M.auth_persona.init', array($params));
             $loaded = true;
         }
 
+        $btn = $this->config->signinbtn;
         $persona = array(
             'url'  => new moodle_url('#'),
-            'icon' => new pix_icon('persona_sign_in_black', get_string('auth_personasignin', 'auth_persona'), 'auth_persona', array('class' => 'auth-persona-loginbtn')),
+            'icon' => new pix_icon($btn, get_string('auth_personasignin', 'auth_persona'), 'auth_persona', array('class' => 'auth-persona-loginbtn')),
             'name' => null
         );
         return array($persona);

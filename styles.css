@@ -1,3 +1,20 @@
 img.auth-persona-signin-btn {
     margin: 5px 0 5px -20px;
 }
+div.auth-persona-privacypolicy,
+div.auth-persona-termsofservice {
+    margin: auto;
+    width: 60%;
+    display: block;
+    padding: 5px;
+}
+
+table#auth-persona-config-table tbody tr td {
+    vertical-align: top;
+}
+table#auth-persona-config-table input {
+    vertical-align: middle;
+}
+table#auth-persona-config-table img {
+    vertical-align: top;
+}

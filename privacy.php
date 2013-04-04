@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'auth_persona', language 'en'
+ * Persona Authentication Privacy Policy page
  *
  * @package    auth
  * @subpackage persona
@@ -25,10 +25,22 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Persona accounts';
-$string['auth_personadescription'] = 'Persona authentication allows the user to register/sign in with Mozilla Persona authentication. As the users email is verified with the IDP used (Default case: https://login.persona.org)';
-$string['auth_personasignin'] = 'Sign in with Persona';
-$string['auth_personasettings'] = 'Persona settings';
-$string['auth_signinbtn'] = 'Sign-in button style';
-$string['auth_privacypolicy'] = 'Privacy policy';
-$string['auth_termsofservice'] = 'Terms of service';
+require(dirname(dirname(dirname(__FILE__))).'/config.php');
+
+$context = context_system::instance();
+$PAGE->set_url("{$CFG->httpswwwroot}/auth/persona/privacy.php");
+$PAGE->set_context($context);
+$PAGE->set_title("{$SITE->fullname}: ".get_string('auth_privacypolicy', 'auth_persona'));
+$PAGE->set_heading("$SITE->fullname");
+
+echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('auth_privacypolicy', 'auth_persona'));
+
+$privacy = get_config('auth/persona', 'privacypolicy');
+if ($privacy && !empty($privacy)) {
+    echo print_container_start(true, 'auth-persona-privacypolicy');
+    echo $privacy;
+    echo print_container_end();
+}
+
+echo $OUTPUT->footer();

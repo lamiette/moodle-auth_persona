@@ -5,15 +5,25 @@ YUI.add('moodle-auth_persona-persona', function (Y) {
         LOGINFORM:    'form#login',
     };
 
-    var currentUser;
-    var loginform;
+    var currentUser    = null;
+    var loginform      = null;
+    var sitename       = M.cfg.wwwroot;
+    var termsofservice = null;
+    var privacypolicy  = null;
 
     M.auth_persona = {
         init: function(config) {
             if (config && config.user) {
                 currentUser = config.user;
-            } else {
-                currentUser = null;
+            }
+            if (config && config.sitename) {
+                sitename = config.sitename;
+            }
+            if (config && config.privacypolicy) {
+                privacypolicy = M.cfg.wwwroot+'/auth/persona/privacy.php';
+            }
+            if (config && config.termsofservice) {
+                termsofservice = M.cfg.wwwroot+'/auth/persona/termsofservice.php';
             }
             Y.delegate('click', this.handlelogin, Y.config.doc, SELECTORS.LOGINBUTTON, this);
             Y.delegate('click', this.handlelogout, Y.config.doc, SELECTORS.LOGOUTBUTTON, this);
@@ -34,7 +44,11 @@ YUI.add('moodle-auth_persona-persona', function (Y) {
         },
         handlelogin: function(e) {
             e.preventDefault();
-            navigator.id.request();
+            navigator.id.request({
+                siteName: sitename,
+                termsOfService: termsofservice,
+                privacyPolicy: privacypolicy,
+            });
         },
         handlelogout: function(e) {
             e.preventDefault();
