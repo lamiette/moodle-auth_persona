@@ -2,9 +2,9 @@
     global $OUTPUT;
     $yesno = array(get_string('no'), get_string('yes'));
 
-    $signinbtns = array('persona_sign_in_black', 'persona_sign_in_blue', 'persona_sign_in_red');
+    $signinbtns = array('dark', 'orange', 'default');
     if (!isset($config->signinbtn)) {
-        $config->signinbtn = 'persona_sign_in_black';
+        $config->signinbtn = 'default';
     }
     if (!isset($config->privacypolicy)) {
         $config->privacypolicy = '';
@@ -23,11 +23,12 @@
     <td align="right"><label for="signinbtn"><?php print_string('auth_signinbtn', 'auth_persona') ?>:</label></td>
     <td>
     <?php
-        foreach ($signinbtns as $btn) {
-            $icon = new pix_icon($btn, get_string('auth_personasignin', 'auth_persona'), 'auth_persona');
-            $checked = ($btn == $config->signinbtn) ? 'checked' : '';
-            $options = array('type' => 'radio', 'name' => 'signinbtn', 'value' => $btn);
-            if ($btn === $config->signinbtn) {
+        foreach ($signinbtns as $btnstyle) {
+            $btn = 'persona_sign_in_'.$btnstyle;
+            $icon = new pix_icon($btn, get_string('auth_signinwithpersona', 'auth_persona'), 'auth_persona');
+            $checked = ($btnstyle == $config->signinbtn) ? 'checked' : '';
+            $options = array('type' => 'radio', 'name' => 'signinbtn', 'value' => $btnstyle);
+            if ($btnstyle === $config->signinbtn) {
                 $options['checked'] = 'checked';
             }
             echo html_writer::start_tag('input', $options);

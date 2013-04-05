@@ -27,7 +27,7 @@
 
 $string['pluginname'] = 'Persona accounts';
 $string['auth_personadescription'] = 'Persona authentication allows the user to register/sign in with Mozilla Persona authentication. As the users email is verified with the IDP used (Default case: https://login.persona.org)';
-$string['auth_personasignin'] = 'Sign in with Persona';
+$string['auth_signinwithpersona'] = 'Sign in with Persona';
 $string['auth_personasettings'] = 'Persona settings';
 $string['auth_signinbtn'] = 'Sign-in button style';
 $string['auth_privacypolicy'] = 'Privacy policy';

@@ -1,6 +1,6 @@
 YUI.add('moodle-auth_persona-persona', function (Y) {
     var SELECTORS = {
-        LOGINBUTTON:  '.auth-persona-loginbtn',
+        LOGINBUTTON:  '.auth-persona-button',
         LOGOUTBUTTON: '.logininfo .logout',
         LOGINFORM:    'form#login',
     };

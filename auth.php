@@ -276,11 +276,11 @@ class auth_plugin_persona extends auth_plugin_base {
             $loaded = true;
         }
 
-        $btn = $this->config->signinbtn;
+        print_object($this->config->signinbtn);
+        $btnclass = ($this->config->signinbtn !== 'default') ? $this->config->signinbtn : '';
+        $signin = html_writer::tag('span', get_string('auth_signinwithpersona', 'auth_persona'));
         $persona = array(
-            'url'  => new moodle_url('#'),
-            'icon' => new pix_icon($btn, get_string('auth_personasignin', 'auth_persona'), 'auth_persona', array('class' => 'auth-persona-loginbtn')),
-            'name' => null
+            'name' => html_writer::link(new moodle_url('#'), $signin, array('class' => 'auth-persona-button '.$btnclass)),
         );
         return array($persona);
     }
