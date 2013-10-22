@@ -239,7 +239,7 @@ class auth_plugin_persona extends auth_plugin_base {
      * Add Javascript requirements where necessary to ensure
      * the persona.org logout can be called.
      */
-    function logout_requirements() {
+    function before_logout() {
         global $PAGE, $USER;
 
         // Include the Persona modules for logout; only once per page.
@@ -276,7 +276,6 @@ class auth_plugin_persona extends auth_plugin_base {
             $loaded = true;
         }
 
-        print_object($this->config->signinbtn);
         $btnclass = ($this->config->signinbtn !== 'default') ? $this->config->signinbtn : '';
         $signin = html_writer::tag('span', get_string('auth_signinwithpersona', 'auth_persona'));
         $persona = array(

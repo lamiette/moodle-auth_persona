@@ -1,6 +1,5 @@
 <?php
     global $OUTPUT;
-    $yesno = array(get_string('no'), get_string('yes'));
 
     $signinbtns = array('dark', 'orange', 'default');
     if (!isset($config->signinbtn)) {
@@ -43,13 +42,13 @@
 <tr>
     <td align="right"><label for="privacypolicy"><?php print_string('auth_privacypolicy', 'auth_persona'); ?>:</label></td>
     <td>
-        <textarea name="privacypolicy" cols="60" rows="20" style="overflow:auto;"><?php echo $config->privacypolicy; ?></textarea>
+        <textarea name="privacypolicy" rows="10" style="overflow:auto;"><?php echo $config->privacypolicy; ?></textarea>
     </td>
 </tr>
 <tr>
     <td align="right"><label for="termsofservice"><?php print_string('auth_termsofservice', 'auth_persona'); ?>:</label></td>
     <td>
-        <textarea name="termsofservice" cols="60" rows="20" style="overflow:auto;"><?php echo $config->termsofservice; ?></textarea>
+        <textarea name="termsofservice" rows="10" style="overflow:auto;"><?php echo $config->termsofservice; ?></textarea>
     </td>
 </tr>
 </table>
